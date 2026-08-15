@@ -5,7 +5,9 @@ import { env, validateEnv } from './config/env.js';
 async function bootstrap() {
   validateEnv();
 
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    bodyParser: false,
+  });
   await app.listen(env.port);
 }
 void bootstrap();

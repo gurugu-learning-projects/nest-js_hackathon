@@ -1,7 +1,7 @@
 # 0001. Better Auth email password identity for the NestJS API
 
 **Date**: 2026-07-30
-**Status**: Proposed
+**Status**: In Progress
 
 ## Summary
 
@@ -152,13 +152,13 @@ Role as a Better Auth `additionalFields` entry with default `PARTICIPANT` and `i
 
 Ordered for Tracer Bullet (end to end auth path first). Migration first per confirmed data model.
 
-1. Replace starter Prisma models with Better Auth user, session, account, and verification schema (including `role` on user); run Prisma generate and a fresh migrate, satisfies **AC-9**, **AC-1** (schema default)
-2. Install `better-auth` and `@thallesp/nestjs-better-auth`; add `src/auth/auth.ts` with Prisma adapter, `emailAndPassword.enabled`, and `user.additionalFields.role` (`PARTICIPANT` | `ADMIN`, default `PARTICIPANT`, `input: false`), satisfies **AC-1**, **AC-2**
-3. Validate `BETTER_AUTH_SECRET` and `BETTER_AUTH_URL` in `src/config/env.ts`; wire `AuthModule.forRoot({ auth })` in `AppModule`; set `bodyParser: false` in `main.ts`, satisfies **AC-3** (runtime wiring)
-4. Mark `GET /` with `@AllowAnonymous()`; add `GET /users/me` Nest controller using `@Session()` returning id, email, name, role, satisfies **AC-4**, **AC-6**, **AC-8**
-5. Confirm sign out via Better Auth clears the session for a follow up `/users/me`, satisfies **AC-5**
-6. Add a seed or script that creates one `ADMIN` user (document usage in README or script header), satisfies **AC-7**
-7. Smoke check: sign up, sign in (cookie), `/users/me`, sign out, anonymous `/`, and `GET /api/auth/ok` if available, satisfies **AC-1** through **AC-9**
+1. [x] Replace starter Prisma models with Better Auth user, session, account, and verification schema (including `role` on user); run Prisma generate and a fresh migrate, satisfies **AC-9**, **AC-1** (schema default)
+2. [x] Install `better-auth` and `@thallesp/nestjs-better-auth`; add `src/auth/auth.ts` with Prisma adapter, `emailAndPassword.enabled`, and `user.additionalFields.role` (`PARTICIPANT` | `ADMIN`, default `PARTICIPANT`, `input: false`), satisfies **AC-1**, **AC-2**
+3. [x] Validate `BETTER_AUTH_SECRET` and `BETTER_AUTH_URL` in `src/config/env.ts`; wire `AuthModule.forRoot({ auth })` in `AppModule`; set `bodyParser: false` in `main.ts`, satisfies **AC-3** (runtime wiring)
+4. [x] Mark `GET /` with `@AllowAnonymous()`; add `GET /users/me` Nest controller using `@Session()` returning id, email, name, role, satisfies **AC-4**, **AC-6**, **AC-8**
+5. [x] Confirm sign out via Better Auth clears the session for a follow up `/users/me`, satisfies **AC-5**
+6. [x] Add a seed or script that creates one `ADMIN` user (document usage in README or script header), satisfies **AC-7**
+7. [x] Smoke check: sign up, sign in (cookie), `/users/me`, sign out, anonymous `/`, and `GET /api/auth/ok` if available, satisfies **AC-1** through **AC-9**
 
 ## Consequences
 
