@@ -7,6 +7,7 @@ import { AppService } from './app.service.js';
 import { auth } from './auth/auth.js';
 import { PrismaModule } from './prisma/prisma.module.js';
 import { UsersModule } from './users/users.module.js';
+import { HackathonModule } from './module/hackathon/hackathon.module.js';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { UsersModule } from './users/users.module.js';
     PrismaModule,
     AuthModule.forRoot({ auth }),
     UsersModule,
+    HackathonModule,
   ],
   controllers: [AppController],
   providers: [AppService],
