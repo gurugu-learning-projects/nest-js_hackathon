@@ -1,0 +1,61 @@
+{
+  "create": {
+    "valid": {
+      "name": "Spring Hack",
+      "description": "Build a useful product in one week.",
+      "startDate": "2026-10-01T09:00:00.000Z",
+      "endDate": "2026-10-08T18:00:00.000Z",
+      "isActive": true
+    },
+    "validMinimal": {
+      "name": "Fall Hack",
+      "startDate": "2026-11-01T09:00:00.000Z",
+      "endDate": "2026-11-08T18:00:00.000Z"
+    }
+  },
+  "update": {
+    "valid": {
+      "name": "Spring Hack 2026",
+      "description": "Updated brief for the spring hackathon.",
+      "isActive": false
+    },
+    "validDates": {
+      "startDate": "2026-10-05T09:00:00.000Z",
+      "endDate": "2026-10-12T18:00:00.000Z"
+    }
+  },
+  "invalid": {
+    "nameTooShort": {
+      "name": "AB",
+      "startDate": "2026-10-01T09:00:00.000Z",
+      "endDate": "2026-10-08T18:00:00.000Z"
+    },
+    "descriptionTooShort": {
+      "name": "Spring Hack",
+      "description": "Too short",
+      "startDate": "2026-10-01T09:00:00.000Z",
+      "endDate": "2026-10-08T18:00:00.000Z"
+    },
+    "startDateInThePast": {
+      "name": "Spring Hack",
+      "startDate": "2026-01-01T09:00:00.000Z",
+      "endDate": "2026-10-08T18:00:00.000Z"
+    },
+    "endDateBeforeStartDate": {
+      "name": "Spring Hack",
+      "startDate": "2026-10-08T09:00:00.000Z",
+      "endDate": "2026-10-01T18:00:00.000Z"
+    },
+    "endDateInThePast": {
+      "name": "Spring Hack",
+      "startDate": "2026-10-01T09:00:00.000Z",
+      "endDate": "2026-01-01T18:00:00.000Z"
+    },
+    "isActiveNotBoolean": {
+      "name": "Spring Hack",
+      "startDate": "2026-10-01T09:00:00.000Z",
+      "endDate": "2026-10-08T18:00:00.000Z",
+      "isActive": "yes"
+    }
+  }
+}

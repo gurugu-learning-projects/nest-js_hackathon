@@ -26,11 +26,11 @@ export function IsAfterDate(
             relatedPropertyName
           ];
 
-          if (!isValidDate(value) || !isValidDate(relatedValue)) {
-            return true;
-          }
-
-          return value > relatedValue;
+          return (
+            isValidDate(value) &&
+            isValidDate(relatedValue) &&
+            value > relatedValue
+          );
         },
         defaultMessage(args: ValidationArguments): string {
           const [relatedPropertyName] = args.constraints as [string];
