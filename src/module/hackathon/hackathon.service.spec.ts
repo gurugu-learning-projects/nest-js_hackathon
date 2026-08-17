@@ -2,9 +2,13 @@ import { jest } from '@jest/globals';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { Prisma } from '../../../generated/prisma/client.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { HackathonService } from './hackathon.service.js';
-import type { HackathonRecord } from './hackathon.types.js';
+import type {
+  HackathonParticipantRecord,
+  HackathonRecord,
+} from './hackathon.types.js';
 
 describe('HackathonService', () => {
   let service: HackathonService;
@@ -16,6 +20,9 @@ describe('HackathonService', () => {
       findUnique: jest.fn(),
       update: jest.fn(),
       delete: jest.fn(),
+    },
+    hackathonParticipant: {
+      create: jest.fn(),
     },
   };
 
@@ -37,6 +44,7 @@ describe('HackathonService', () => {
     prisma.hackathon.findUnique.mockReset();
     prisma.hackathon.update.mockReset();
     prisma.hackathon.delete.mockReset();
+    prisma.hackathonParticipant.create.mockReset();
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -151,6 +159,78 @@ describe('HackathonService', () => {
         NotFoundException,
       );
       expect(prisma.hackathon.delete).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('join', () => {
+    const participant: HackathonParticipantRecord = {
+      id: 'part-1',
+      hackathonId: 'hack-1',
+      userId: 'user-1',
+      createdAt: new Date('2026-08-17T00:00:00.000Z'),
+      updatedAt: new Date('2026-08-17T00:00:00.000Z'),
+    };
+
+    it('creates a participant when the hackathon is active and open', async () => {
+      prisma.hackathon.findUnique.mockResolvedValue(hackathon);
+      prisma.hackathonParticipant.create.mockResolvedValue(participant);
+
+      await expect(service.join('hack-1', 'user-1')).resolves.toEqual(
+        participant,
+      );
+      expect(prisma.hackathonParticipant.create).toHaveBeenCalledWith({
+        data: {
+          hackathonId: 'hack-1',
+          userId: 'user-1',
+        },
+      });
+    });
+
+    it('throws NotFoundException when the hackathon is missing', async () => {
+      prisma.hackathon.findUnique.mockResolvedValue(null);
+
+      await expect(service.join('missing', 'user-1')).rejects.toBeInstanceOf(
+        NotFoundException,
+      );
+      expect(prisma.hackathonParticipant.create).not.toHaveBeenCalled();
+    });
+
+    it('throws BadRequestException when the hackathon is not active', async () => {
+      prisma.hackathon.findUnique.mockResolvedValue({
+        ...hackathon,
+        isActive: false,
+      });
+
+      await expect(service.join('hack-1', 'user-1')).rejects.toBeInstanceOf(
+        BadRequestException,
+      );
+      expect(prisma.hackathonParticipant.create).not.toHaveBeenCalled();
+    });
+
+    it('throws BadRequestException when the hackathon has ended', async () => {
+      prisma.hackathon.findUnique.mockResolvedValue({
+        ...hackathon,
+        endDate: new Date('2020-01-01T00:00:00.000Z'),
+      });
+
+      await expect(service.join('hack-1', 'user-1')).rejects.toBeInstanceOf(
+        BadRequestException,
+      );
+      expect(prisma.hackathonParticipant.create).not.toHaveBeenCalled();
+    });
+
+    it('throws BadRequestException when the unique constraint is violated', async () => {
+      prisma.hackathon.findUnique.mockResolvedValue(hackathon);
+      prisma.hackathonParticipant.create.mockRejectedValue(
+        new Prisma.PrismaClientKnownRequestError('Unique constraint failed', {
+          code: 'P2002',
+          clientVersion: 'test',
+        }),
+      );
+
+      await expect(service.join('hack-1', 'user-1')).rejects.toBeInstanceOf(
+        BadRequestException,
+      );
     });
   });
 });

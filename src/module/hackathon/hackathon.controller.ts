@@ -20,7 +20,10 @@ import { ResponseMessage } from '../../common/decorators/response-message.decora
 import { CreateHackathonDto } from './dto/create-hackathon.dto.js';
 import { UpdateHackathonDto } from './dto/update-hackathon.dto.js';
 import { HackathonService } from './hackathon.service.js';
-import type { HackathonRecord } from './hackathon.types.js';
+import type {
+  HackathonParticipantRecord,
+  HackathonRecord,
+} from './hackathon.types.js';
 
 @Controller('hackathon')
 @UseGuards(AuthGuard)
@@ -64,5 +67,15 @@ export class HackathonController {
   @ResponseMessage('Hackathon deleted')
   remove(@Param('id') id: string): Promise<HackathonRecord> {
     return this.hackathonService.remove(id);
+  }
+
+  @Post(':id/join')
+  @Roles(['PARTICIPANT'])
+  @ResponseMessage('Joined hackathon')
+  join(
+    @Param('id') id: string,
+    @Session() session: AuthSession,
+  ): Promise<HackathonParticipantRecord> {
+    return this.hackathonService.join(id, session.user.id);
   }
 }
